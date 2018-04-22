@@ -41,10 +41,10 @@ public class Tests extends TestBase {
                 }
             }
             catch (StaleElementReferenceException error){
-
             }
-
         }
     }
+
+
 
 }
