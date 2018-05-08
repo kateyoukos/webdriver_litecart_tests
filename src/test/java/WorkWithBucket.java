@@ -4,6 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class WorkWithBucket extends TestBase {
 
@@ -18,14 +19,20 @@ public class WorkWithBucket extends TestBase {
             //open first product
             products.get(0).click();
             wait.until(ExpectedConditions.presenceOfElementLocated(By.name("add_cart_product")));
-            driver.findElement(By.name("add_cart_product")).click();
 
+            //fix with yellow duck - when user should select size
+            if(!driver.findElements(By.name("options[Size]")).isEmpty()){
+                driver.findElement(By.name("options[Size]")).click();
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("option[value=\"Small\"]")));
+                driver.findElement(By.cssSelector("option[value=\"Small\"]")).click();
+            }
+            driver.findElement(By.name("add_cart_product")).click();
             String countProducts = driver.findElement(By.cssSelector("span[class=\"quantity\"]")).getText();
             WebElement counter = driver.findElement(By.cssSelector("span[class=\"quantity\"]"));
-
-            String text = i +"";
+            String text = i + "";
             wait.until(ExpectedConditions.textToBePresentInElement(counter, text));
-        }
+
+            }
 
         driver.findElement(By.cssSelector("a[href=\"http://localhost/litecart/en/checkout\"][class=\"link\"]")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[name=\"remove_cart_item\"]")));
