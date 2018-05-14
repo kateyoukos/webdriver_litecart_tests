@@ -12,15 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SortingCountries extends TestBase {
 
-    /*@Test
+    @Test
     public void checkSortingCountries() {
-        driver.get("http://localhost/litecart/admin/login.php");
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("login_form")));
-        driver.findElement(By.cssSelector("input[name=\"username\"]")).sendKeys("admin");
-        driver.findElement(By.cssSelector("input[name=\"password\"]")).sendKeys("admin");
-        driver.findElement(By.cssSelector("button[name=\"login\"]")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("box-apps-menu-wrapper")));
-
         driver.get("http://localhost/litecart/admin/?app=countries&doc=countries");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("content")));
 
@@ -57,7 +50,6 @@ public class SortingCountries extends TestBase {
                 //go back to previous page
                 driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL+"w");
                 wait.until(ExpectedConditions.presenceOfElementLocated(By.id("content")));
-
             }
         }
 
@@ -69,27 +61,25 @@ public class SortingCountries extends TestBase {
          Collections.sort(sortedCountries);
         //check equal
         assert countries != sortedCountries;
-    }*/
+    }
 
     @Test
     public void checkSortingZones() {
-
-
         driver.get("http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("content")));
 
         List<WebElement> elem_countries = driver.findElements(By.cssSelector("td>a"));
-        System.out.println(elem_countries);
         for(int i = 0; i < elem_countries.size(); i=i+2){
             String url = elem_countries.get(i).getAttribute("href");
-            System.out.println(url);
-            ((JavascriptExecutor) driver).executeScript("window.open(arguments[0])", url);
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            List<WebElement> elem_zones = driver.findElements(By.cssSelector("select[name*=\"zone_code\"]>option[selected]"));
+            driver.get(url);
             List<String> zones = new ArrayList<String>();
-            for (WebElement zone: elem_zones) {
-                zones.add(zone.getText());
+            List<WebElement> geo_zones = driver.findElements(By.cssSelector("select[name*=\"zone_code\"]>option[selected=\"selected\"]"));
+            for (WebElement g : geo_zones) {
+                zones.add(g.getAttribute("textContent"));
             }
+
+            driver.get("http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones");
+            elem_countries = driver.findElements(By.cssSelector("td>a"));
 
             //sort list
             List<String> sortedZones = new ArrayList<String>();
@@ -101,12 +91,10 @@ public class SortingCountries extends TestBase {
             assert zones != sortedZones;
 
             System.out.println(zones);
+            System.out.println(sortedZones);
             //go back to previous page
             driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL+"w");
             wait.until(ExpectedConditions.presenceOfElementLocated(By.id("content")));
-
-
         }
-
     }
 }
